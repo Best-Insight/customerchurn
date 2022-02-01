@@ -8,6 +8,10 @@ wheel>=0.29
 numpy
 pandas
 scikit-learn
+nltk
+spacy
+seaborn
+tensorflow
 
 # tests/linter
 black

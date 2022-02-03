@@ -2,6 +2,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import string
+import pandas as pd
 
 
 def remove_punctuations(text):
@@ -11,7 +12,7 @@ def remove_punctuations(text):
     return text
 
 def lowercase(text):
-    text = text.lower()
+    text = text.str.lower()
     return text
 
 def remove_num(text):
@@ -44,4 +45,4 @@ def text_prepro(text):
     return text
 
 def series_prepro(series):
-    return series.apply(text_prepro)
+    return pd.DataFrame(series.apply(text_prepro))

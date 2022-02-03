@@ -1,12 +1,14 @@
 import pandas as pd
+import nltk
 
 from customerchurn.preprocessing import text_prepro
 
 
 if __name__ == "__main__":
-    df = pd.read_csv('../raw_data/concat.csv')
+    nltk.download('omw-1.4')
+    df = pd.read_csv('raw_data/concat.csv')
     df_sample= df.head(10)
 
-    df_sample['reviews'] = df_sample['reviews'].apply(text_prepro)
+    df_sample['review'] = df_sample['review'].apply(text_prepro)
 
-    print(df_sample['reviews'])
+    print(df_sample['review'])

@@ -42,3 +42,6 @@ def text_prepro(text):
     text = lemmatize(text)
     text = remove_stopwords(text)
     return text
+
+def series_prepro(series):
+    return series.apply(text_prepro)

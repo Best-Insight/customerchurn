@@ -12,7 +12,7 @@ def remove_punctuations(text):
     return text
 
 def lowercase(text):
-    text = text.str.lower()
+    text = text.lower()
     return text
 
 def remove_num(text):
@@ -46,3 +46,6 @@ def text_prepro(text):
 
 def series_prepro(series):
     return pd.DataFrame(series.apply(text_prepro))
+
+def text1():
+    return 'no'

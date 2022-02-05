@@ -12,7 +12,7 @@ def remove_punctuations(text):
     return text
 
 def lowercase(text):
-    text = text.str.lower()
+    text = text.lower()
     return text
 
 def remove_num(text):

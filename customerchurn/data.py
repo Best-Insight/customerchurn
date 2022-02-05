@@ -4,13 +4,6 @@ from customerchurn.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH
 from sklearn.model_selection import train_test_split
 
 
-# def star_2_recom(star=4):
-
-
-
-
-
-
 # def get_data_from_gcp(nrows=10000, optimize=False, **kwargs):
 #     """method to get the training data (or a portion of it) from google cloud bucket"""
 #     # Add Client() here

@@ -4,6 +4,7 @@ from sklearn.preprocessing import FunctionTransformer
 
 from customerchurn.preprocessing import series_prepro
 
+
 def create_pre_pipe():
     prep = FunctionTransformer(series_prepro)
 

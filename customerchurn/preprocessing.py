@@ -46,6 +46,3 @@ def text_prepro(text):
 
 def series_prepro(series):
     return pd.DataFrame(series.apply(text_prepro))
-
-def text1():
-    return 'no'

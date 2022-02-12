@@ -1,7 +1,7 @@
 from customerchurn.data import get_data, clean_df, holdout
 from customerchurn.model import get_model
 from customerchurn.pipeline import get_pipeline
-from customerchurn.mlflow import MLFlowBase
+from customerchurn.mlflowlog import MLFlowBase
 from customerchurn.params import MLFLOW_URI, EXPERIMENT_NAME
 from sklearn.model_selection import GridSearchCV
 

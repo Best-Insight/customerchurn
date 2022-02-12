@@ -12,6 +12,8 @@ nltk
 spacy
 seaborn
 tensorflow
+tf-models-official
+tensorflow-text
 
 # tests/linter
 black

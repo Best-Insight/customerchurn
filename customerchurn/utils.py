@@ -13,3 +13,11 @@ def get_lang_tag(reviews):
     nlp.add_pipe('language_detector01', last=True)
 
     return [nlp(str(row))._.language['language'] for row in reviews]
+
+
+def stars_2_recoms(series, star=4):
+
+    def get_recom(s):
+        return 1 if s >= star else 0
+
+    return [get_recom(s) for s in series]

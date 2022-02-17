@@ -14,10 +14,7 @@ seaborn
 tensorflow
 tf-models-official
 tensorflow-text
-<<<<<<< HEAD
 python-multipart
-=======
->>>>>>> master
 
 # tests/linter
 black

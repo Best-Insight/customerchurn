@@ -66,7 +66,7 @@ def star2recommend(df, good=4):
 #     df = pd.read_csv(path, nrows=nrows)
 #     return df
 
-def get_data(nrows=10000, path = './customerchurn/data/rwa_en.csv', optimize=False, **kwargs):
+def get_data(nrows=10000, path = './customerchurn/data/raw_en.csv', optimize=False, **kwargs):
     """method to get the training data from local hard-drive"""
     df = pd.read_csv( path, nrows=nrows)
     df = star2recommend(df)

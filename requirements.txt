@@ -14,6 +14,10 @@ seaborn
 tensorflow
 tf-models-official
 tensorflow-text
+<<<<<<< HEAD
+python-multipart
+=======
+>>>>>>> master
 
 # tests/linter
 black
@@ -27,6 +31,8 @@ gcsfs
 google-cloud-storage
 mlflow
 s3fs
+fastapi
+uvicorn
 
 # utilities
 six>=1.14

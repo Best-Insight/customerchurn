@@ -28,11 +28,14 @@ BUCKET_NAME = "wagon-data-709-melbourne-customerchurn"
 # or if you want to use the full dataset (you need need to upload it first of course)
 BUCKET_TRAIN_DATA_PATH = 'data/review_datagcp.csv'
 
+
 ##### Training  - - - - - - - - - - - - - - - - - - - - - -
 
 # not required here
 
 ##### Model - - - - - - - - - - - - - - - - - - - - - - - -
+
+BUCKET_TRAIN_MODEL_PATH = 'models'
 
 # model folder name (will contain the folders for all trained model versions)
 MODEL_NAME = 'customerchurn'

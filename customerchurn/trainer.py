@@ -4,19 +4,20 @@ from customerchurn.model import build_classifier_model
 # from customerchurn.pipeline import get_pipeline
 from customerchurn.mlflowlog import MLFlowBase
 from customerchurn.params import MLFLOW_URI, EXPERIMENT_NAME
-from customerchurn.gcp import storage_upload
+from customerchurn.gcp import history_upload, storage_upload
 
 import joblib
 
 from sklearn.model_selection import train_test_split, GridSearchCV
 from keras.wrappers.scikit_learn import KerasClassifier
 import tensorflow as tf
+from sklearn.metrics import confusion_matrix
 # from tensorflow.keras.callbacks import EarlyStopping
 
 
 class Trainer(MLFlowBase):
 
-    def __init__(self, lr=[0.001], batch_sizes=[128]):
+    def __init__(self, lr=0.001, batch_sizes=128):
         super().__init__(
             EXPERIMENT_NAME,
             MLFLOW_URI)
@@ -34,7 +35,7 @@ class Trainer(MLFlowBase):
         self.mlflow_log_param("customerchurn_gcp", model_name)
 
         # get data
-        df = get_data_from_gcp(n_rows= 1000)
+        df = get_data_from_gcp(n_rows= None)
 
         # get x, y
         X = df['review']
@@ -48,11 +49,22 @@ class Trainer(MLFlowBase):
                                                             random_state=42)
 
         # create model
+
+
+        model = build_classifier_model(self.learning_rate)
+
         es = tf.keras.callbacks.EarlyStopping(
             monitor='val_loss', restore_best_weights=True, patience=2)
 
-        model = build_classifier_model(self.learning_rate)
-        model.fit(X_train, y_train)
+        history = model.fit(X_train,y_train, batch_size =128 , epochs =100,
+                            validation_split=0.3, callbacks=[es], verbose = 1)
+
+        import json
+        with open ('my_model_history.json', 'w') as fp:
+            json.dump(history.history, fp)
+
+        evaluation = model.evaluate(X_test, y_test)
+        self.mlflow_log_param("evaluation", evaluation)
 
 
         # model = KerasClassifier(build_fn=build_classifier_model,
@@ -85,14 +97,19 @@ class Trainer(MLFlowBase):
 
 
         # make prediction for metrics
-        # y_pred = pipeline.predict(X_test)
+        y_pred = model.predict(X_test)
+        y_pred[y_pred > 0.5] = 1
+        y_pred[y_pred <= 0.5] = 0
 
+
+        matrix =confusion_matrix(y_test, y_pred.astype(int))
+        self.mlflow_log_metric('confusion_matrix', matrix)
         # evaluate metrics
         #SCORING FUNCTION
-        #score = compute_rmse(y_pred, y_test)
+        # score = compute_rmse(y_pred, y_test)
 
         # save the trained model
-        model.save('my_model.h5')
+        model.save('my_model')
 
         # push metrics to mlflow
         # self.mlflow_log_metric("score", score)
@@ -111,3 +128,4 @@ if __name__ == '__main__':
     model = Trainer()
     model = model.train()
     storage_upload()
+    history_upload()

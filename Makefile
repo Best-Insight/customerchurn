@@ -132,7 +132,7 @@ BUCKET_TRAINING_FOLDER = 'trainings'
 
 PYTHON_VERSION=3.7
 FRAMEWORK=scikit-learn
-RUNTIME_VERSION=1.15
+RUNTIME_VERSION=2.8
 
 ##### Package params  - - - - - - - - - - - - - - - - - - -
 

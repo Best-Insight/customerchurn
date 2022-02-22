@@ -19,14 +19,15 @@ PATH_TO_LOCAL_MODEL = 'model.joblib'
 
 ### GCP Storage - - - - - - - - - - - - - - - - - - - - - -
 
-BUCKET_NAME = "XXXX"
+BUCKET_NAME = "wagon-data-709-melbourne-customerchurn"
 
 ##### Data  - - - - - - - - - - - - - - - - - - - - - - - -
 
 # train data file location
 # /!\ here you need to decide if you are going to train using the provided and uploaded data/train_1k.csv sample file
 # or if you want to use the full dataset (you need need to upload it first of course)
-BUCKET_TRAIN_DATA_PATH = 'data/concat.csv'
+BUCKET_TRAIN_DATA_PATH = 'data/review_datagcp.csv'
+
 
 ##### Training  - - - - - - - - - - - - - - - - - - - - - -
 
@@ -34,11 +35,13 @@ BUCKET_TRAIN_DATA_PATH = 'data/concat.csv'
 
 ##### Model - - - - - - - - - - - - - - - - - - - - - - - -
 
+BUCKET_TRAIN_MODEL_PATH = 'models'
+
 # model folder name (will contain the folders for all trained model versions)
 MODEL_NAME = 'customerchurn'
 
 # model version folder name (where the trained model.joblib file will be stored)
-MODEL_VERSION = 'v1'
+MODEL_VERSION = 'v2'
 
 ### GCP AI Platform - - - - - - - - - - - - - - - - - - - -
 

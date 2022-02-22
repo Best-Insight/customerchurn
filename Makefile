@@ -64,6 +64,8 @@ pypi:
 # path of the file to upload to gcp (the path of the file should be absolute or should match the directory where the make command is run)
 LOCAL_PATH=models/sentiment_model1
 
+LOCAL_PATH_DATA=raw_data/review_datagcp.csv
+
 # project id
 PROJECT_ID=le-wagon-cathal
 
@@ -73,9 +75,13 @@ BUCKET_NAME=wagon-data-709-melbourne-customerchurn
 # bucket directory in which to store the uploaded file (we choose to name this data as a convention)
 BUCKET_FOLDER_MODEL=models
 
+BUCKET_FOLDER_DATA=data
+
 # name for the uploaded file inside the bucket folder (here we choose to keep the name of the uploaded file)
 # BUCKET_FILE_NAME=another_file_name_if_I_so_desire.csv
 BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
+BUCKET_FILE_NAME_DATA=$(shell basename ${LOCAL_PATH_DATA})
+
 
 REGION=europe-west1
 
@@ -88,6 +94,10 @@ create_bucket:
 
 upload_model:
 	-@gsutil cp -r ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER_MODEL}/${BUCKET_FILE_NAME}
+
+
+upload_data:
+	-@gsutil cp ${LOCAL_PATH_DATA} gs://${BUCKET_NAME}/${BUCKET_FOLDER_DATA}/${BUCKET_FILE_NAME_DATA}
 
 ### GCP configuration - - - - - - - - - - - - - - - - - - -
 
@@ -122,12 +132,12 @@ BUCKET_TRAINING_FOLDER = 'trainings'
 
 PYTHON_VERSION=3.7
 FRAMEWORK=scikit-learn
-RUNTIME_VERSION=1.15
+RUNTIME_VERSION=2.8
 
 ##### Package params  - - - - - - - - - - - - - - - - - - -
 
 PACKAGE_NAME=customerchurn
-FILENAME=sentiment_model1
+FILENAME=trainer
 
 ##### Job - - - - - - - - - - - - - - - - - - - - - - - - -
 

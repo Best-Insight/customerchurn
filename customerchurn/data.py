@@ -58,13 +58,13 @@ def star2recommend(df, good=4):
     return df
 
 
-# def get_data_from_gcp(nrows=10000, optimize=False, **kwargs):
-#     """method to get the training data (or a portion of it) from google cloud bucket"""
-#     # Add Client() here
-#     client = storage.Client()
-#     path = f"gs://{BUCKET_NAME}/{BUCKET_TRAIN_DATA_PATH}"
-#     df = pd.read_csv(path, nrows=nrows)
-#     return df
+def get_data_from_gcp(n_rows= None, optimize=False, **kwargs):
+    """method to get the training data (or a portion of it) from google cloud bucket"""
+    # Add Client() here
+    client = storage.Client()
+    path = f"gs://{BUCKET_NAME}/{BUCKET_TRAIN_DATA_PATH}"
+    df = pd.read_csv(path, nrows =n_rows)
+    return df
 
 def get_data(nrows=10000, path = './customerchurn/data/raw_en.csv', optimize=False, **kwargs):
     """method to get the training data from local hard-drive"""

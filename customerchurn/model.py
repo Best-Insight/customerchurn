@@ -23,7 +23,7 @@ def build_classifier_model(lr):
     model = tf.keras.Model(text_input, net)
     model.compile(loss='binary_crossentropy',
                   optimizer=tf.keras.optimizers.Adam(learning_rate=lr),
-                  metrics=['accuracy'])
+                  metrics=['accuracy', tf.keras.metrics.Recall(), tf.keras.metrics.Precision(), tf.keras.metrics.AUC()])
 
     return model
 

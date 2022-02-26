@@ -55,33 +55,31 @@ pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
 
 
-
-
 # ----------------------------------
 # GCP COMPONENT
-# ---------------------------------
+# ----------------------------------
 
 # path of the file to upload to gcp (the path of the file should be absolute or should match the directory where the make command is run)
-LOCAL_PATH=models/sentiment_model1
+LOCAL_PATH_MODEL=models/sentiment_model1
 
-LOCAL_PATH_DATA=raw_data/review_datagcp.csv
+LOCAL_PATH_DATA=raw_data/yelp_heading_split/yelp_score_10_midout
+LOCAL_PATH_DATA_FOLDER=raw_data/yelp_heading_split
 
 # project id
-PROJECT_ID=le-wagon-cathal
+PROJECT_ID=lewagon-alen-28296
 
 # bucket name
-BUCKET_NAME=wagon-data-709-melbourne-customerchurn
+BUCKET_NAME=wagon-data-709-melbourne-customerchurn-alen
 
 # bucket directory in which to store the uploaded file (we choose to name this data as a convention)
 BUCKET_FOLDER_MODEL=models
-
-BUCKET_FOLDER_DATA=data
+BUCKET_FOLDER_DATA=data/yelp_heading_split
 
 # name for the uploaded file inside the bucket folder (here we choose to keep the name of the uploaded file)
 # BUCKET_FILE_NAME=another_file_name_if_I_so_desire.csv
-BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
+BUCKET_FILE_NAME_MODEL=$(shell basename ${LOCAL_PATH_MODEL})
 BUCKET_FILE_NAME_DATA=$(shell basename ${LOCAL_PATH_DATA})
-
+BUCKET_FILE_NAME_DATA_FOLDER=$(shell basename ${LOCAL_PATH_DATA_FOLDER})
 
 REGION=europe-west1
 
@@ -93,11 +91,14 @@ create_bucket:
 
 
 upload_model:
-	-@gsutil cp -r ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER_MODEL}/${BUCKET_FILE_NAME}
+	-@gsutil cp -r ${BUCKET_FOLDER_MODEL} gs://${BUCKET_NAME}/${BUCKET_FOLDER_MODEL}/${BUCKET_FILE_NAME_MODEL}
 
 
 upload_data:
 	-@gsutil cp ${LOCAL_PATH_DATA} gs://${BUCKET_NAME}/${BUCKET_FOLDER_DATA}/${BUCKET_FILE_NAME_DATA}
+
+upload_data_folder:
+	-@gsutil cp -r ${LOCAL_PATH_DATA_FOLDER} gs://${BUCKET_NAME}/${BUCKET_FOLDER_DATA}/${BUCKET_FILE_NAME_DATA_FOLDER}
 
 ### GCP configuration - - - - - - - - - - - - - - - - - - -
 
@@ -141,7 +142,7 @@ FILENAME=trainer
 
 ##### Job - - - - - - - - - - - - - - - - - - - - - - - - -
 
-JOB_NAME=customerchurn_predict$(shell date +'%Y%m%d_%H%M%S')
+JOB_NAME=customerchurn_yelp_score_10_midout_$(shell date +'%Y%m%d_%H%M%S')
 
 
 run_locally:
@@ -154,15 +155,10 @@ gcp_submit_training:
 		--module-name ${PACKAGE_NAME}.${FILENAME} \
 		--python-version=${PYTHON_VERSION} \
 		--runtime-version=${RUNTIME_VERSION} \
+		--master-accelerator count=1,type=nvidia-tesla-a100 \
 		--region ${REGION} \
 		--stream-logs
 
-# clean:
-# 	@rm -f */version.txt
-# 	@rm -f .coverage
-# 	@rm -fr */__pycache__ __pycache__
-# 	@rm -fr build dist *.dist-info *.egg-info
-# 	@rm -fr */*.pyc
 
 ##### Prediction API - - - - - - - - - - - - - - - - - - - - - - - - -
 

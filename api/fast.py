@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 # new_model = tf.keras.models.load_model('models/sentiment_model1') #this is the local model from colab
-gcp_model = tf.keras.models.load_model('models/my_model') #this is the GCP model
+gcp_model = tf.keras.models.load_model('models/Financial_Services_model') #this is the GCP model
 
 @app.get("/")
 def index():

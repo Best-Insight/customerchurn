@@ -60,7 +60,7 @@ pypi:
 # ----------------------------------
 
 # path of the file to upload to gcp (the path of the file should be absolute or should match the directory where the make command is run)
-LOCAL_PATH_MODEL=models/sentiment_model1
+LOCAL_PATH_MODEL=models/Financial_Sevices_model
 
 LOCAL_PATH_DATA=raw_data/yelp_heading_split/yelp_score_10_midout
 LOCAL_PATH_DATA_FOLDER=raw_data/yelp_heading_split

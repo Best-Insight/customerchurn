@@ -62,7 +62,7 @@ pypi:
 # path of the file to upload to gcp (the path of the file should be absolute or should match the directory where the make command is run)
 LOCAL_PATH_MODEL=models/Financial_Sevices_model
 
-LOCAL_PATH_DATA=raw_data/yelp_heading_split/yelp_score_10_midout
+LOCAL_PATH_DATA=raw_data/yelp_heading_split/yelp_score_5
 LOCAL_PATH_DATA_FOLDER=raw_data/yelp_heading_split
 
 # project id
@@ -81,7 +81,7 @@ BUCKET_FILE_NAME_MODEL=$(shell basename ${LOCAL_PATH_MODEL})
 BUCKET_FILE_NAME_DATA=$(shell basename ${LOCAL_PATH_DATA})
 BUCKET_FILE_NAME_DATA_FOLDER=$(shell basename ${LOCAL_PATH_DATA_FOLDER})
 
-REGION=europe-west1
+REGION=asia-southeast1
 
 set_project:
 	-@gcloud config set project ${PROJECT_ID}
@@ -91,14 +91,14 @@ create_bucket:
 
 
 upload_model:
-	-@gsutil cp -r ${BUCKET_FOLDER_MODEL} gs://${BUCKET_NAME}/${BUCKET_FOLDER_MODEL}/${BUCKET_FILE_NAME_MODEL}
+	-@gsutil -m cp -r ${BUCKET_FOLDER_MODEL} gs://${BUCKET_NAME}/${BUCKET_FOLDER_MODEL}/${BUCKET_FILE_NAME_MODEL}
 
 
 upload_data:
 	-@gsutil cp ${LOCAL_PATH_DATA} gs://${BUCKET_NAME}/${BUCKET_FOLDER_DATA}/${BUCKET_FILE_NAME_DATA}
 
 upload_data_folder:
-	-@gsutil cp -r ${LOCAL_PATH_DATA_FOLDER} gs://${BUCKET_NAME}/${BUCKET_FOLDER_DATA}/${BUCKET_FILE_NAME_DATA_FOLDER}
+	-@gsutil -m cp -r ${LOCAL_PATH_DATA_FOLDER} gs://${BUCKET_NAME}/${BUCKET_FOLDER_DATA}/${BUCKET_FILE_NAME_DATA_FOLDER}
 
 ### GCP configuration - - - - - - - - - - - - - - - - - - -
 
@@ -129,8 +129,6 @@ BUCKET_TRAINING_FOLDER = 'trainings'
 
 ##### Machine configuration - - - - - - - - - - - - - - - -
 
-# REGION=europe-west1
-
 PYTHON_VERSION=3.7
 FRAMEWORK=scikit-learn
 RUNTIME_VERSION=2.8
@@ -142,7 +140,7 @@ FILENAME=trainer
 
 ##### Job - - - - - - - - - - - - - - - - - - - - - - - - -
 
-JOB_NAME=customerchurn_yelp_score_10_midout_$(shell date +'%Y%m%d_%H%M%S')
+JOB_NAME=customerchurn_yelp_score_5_combined_$(shell date +'%Y%m%d_%H%M%S')
 
 
 run_locally:
@@ -155,6 +153,8 @@ gcp_submit_training:
 		--module-name ${PACKAGE_NAME}.${FILENAME} \
 		--python-version=${PYTHON_VERSION} \
 		--runtime-version=${RUNTIME_VERSION} \
+		--scale-tier custom \
+		--master-machine-type a2-highgpu-1g \
 		--master-accelerator count=1,type=nvidia-tesla-a100 \
 		--region ${REGION} \
 		--stream-logs

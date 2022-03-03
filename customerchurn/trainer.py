@@ -1,10 +1,11 @@
 from customerchurn.data import get_data
 from customerchurn.data import get_data_from_gcp, get_dataset_from_gcp, split_dataset, get_data_from_gcp_folder, star2recommend
-from customerchurn.model import build_classifier_model, build_combined_class_model
+from customerchurn.model import build_classifier_model, build_combined_class_model, build_autoencoder
 # from customerchurn.pipeline import get_pipeline
 from customerchurn.mlflowlog import MLFlowBase
 from customerchurn.params import MLFLOW_URI, EXPERIMENT_NAME
 from customerchurn.gcp import storage_upload_folder, storage_upload_file
+from customerchurn.auto_encoder_pre import auto_encoder_preprocessing
 
 import json
 
@@ -17,12 +18,14 @@ from sklearn.metrics import confusion_matrix
 
 class Trainer(MLFlowBase):
 
-    def __init__(self, lr=0.001, batch_sizes=128):
+    def __init__(self, lr=0.001, batch_sizes=128, ld=2, n_words=20):
         super().__init__(
             EXPERIMENT_NAME,
             MLFLOW_URI)
         self.learning_rate = lr
         self.batch_sizes = batch_sizes
+        self.ld = ld
+        self.n_words = n_words
 
     def prediction_bias(self, y_pred, bias=0.5):
         y_pred[y_pred > bias] = 1
@@ -217,17 +220,58 @@ class Trainer(MLFlowBase):
         # return the gridsearch in order to identify the best estimators and params
         return model
 
+    def cluster_train(self):
+        model_name = 'cluster_model'
+        # create a mlflow training
+        self.mlflow_create_run()
+        # log params
+        self.mlflow_log_param("customerchurn_cluster", model_name)
+        # get data
+        df = get_data_from_gcp(n_rows=None)
+        df = star2recommend(df)
+        # get x, y
+        X = df['review']
+        y = df['recommendation'].apply(lambda x: 0
+                                       if x == 'Not Recommended' else 1)
+        # preprocessing
+        X_pad = auto_encoder_preprocessing(X)
+
+        # create model
+        autoencoder = build_autoencoder(self.ld, self.n_words)
+
+        es = tf.keras.callbacks.EarlyStopping(monitor='val_loss',
+                                              restore_best_weights=True,
+                                              patience=20)
+
+        history = autoencoder.fit(X_pad,
+                                  X_pad,
+                                  batch_size=128,
+                                  epochs=1000,
+                                  validation_split=0.2,
+                                  callbacks=[es],
+                                  verbose=1)
+
+        with open('yelp_score_5_history.json', 'w') as fp:
+            json.dump(history.history, fp)
+        # save the trained model
+        autoencoder.save('yelp_score_5_model')
+
+        # push metrics to mlflow
+        # self.mlflow_log_metric("score", score)
+
+        # return the gridsearch in order to identify the best estimators and params
+        return autoencoder
 
 
 
 if __name__ == '__main__':
 
     model = Trainer()
-    model = model.train()
-    # model = model.combined_train()
+    # model = model.train()
+    model = model.combined_train()
     storage_upload_folder(rm=False,
-                          folder_name='yelp_score_10_midout_model',
+                          folder_name='yelp_score_5_model',
                           gcp_folder='models')
     storage_upload_file(rm=False,
-                        file_name='yelp_score_10_midout_history.json',
+                        file_name='yelp_score_5_history.json',
                         gcp_folder='history')

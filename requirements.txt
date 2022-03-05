@@ -10,7 +10,6 @@ pandas
 scikit-learn
 nltk
 spacy
-seaborn
 keras==2.8.0
 Keras-Preprocessing==1.1.2
 tensorflow-text==2.8.1
@@ -33,7 +32,6 @@ yapf
 gcsfs
 google-cloud-storage
 mlflow
-s3fs
 fastapi
 uvicorn
 

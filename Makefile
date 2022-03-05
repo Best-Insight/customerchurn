@@ -164,3 +164,17 @@ gcp_submit_training:
 
 run_api:
 	uvicorn api.fast:app --reload  # load web server with code autoreload
+
+
+
+# Docker run commands ----------------------------------------------
+
+run_docker_build:
+	@docker build -t eu.gcr.io/le-wagon-cathal/customerchurn1 .
+	@docker run -e PORT=8000 -p 8000:8000 eu.gcr.io/le-wagon-cathal/customerchurn1
+
+docker_push:
+	@docker push eu.gcr.io/le-wagon-cathal/customerchurn1
+
+docker_deploy:
+	@gcloud run deploy --image eu.gcr.io/le-wagon-cathal/customerchurn1 --platform managed --region europe-west1 --timeout=600

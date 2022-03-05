@@ -10,7 +10,6 @@ pandas
 scikit-learn
 nltk
 spacy
-seaborn
 keras==2.8.0
 Keras-Preprocessing==1.1.2
 tensorflow-text==2.8.1
@@ -20,6 +19,7 @@ tensorflow-hub==0.12.0
 tf-models-official==2.8.0
 tf-estimator-nightly==2.8.0.dev2021122109
 python-multipart
+gensim
 
 # tests/linter
 black
@@ -32,7 +32,6 @@ yapf
 gcsfs
 google-cloud-storage
 mlflow
-s3fs
 fastapi
 uvicorn
 

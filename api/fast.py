@@ -7,6 +7,7 @@ import pytz
 import joblib
 import tensorflow as tf
 import tensorflow_text as text
+import api.prep_encoder
 
 
 
@@ -21,6 +22,7 @@ app.add_middleware(
 )
 # new_model = tf.keras.models.load_model('models/sentiment_model1') #this is the local model from colab
 gcp_model = tf.keras.models.load_model('models/Financial_Services_model') #this is the GCP model
+finance_cluster_model = tf.keras.models.load_model('models/finance_encoder') #this is the GCP model
 
 @app.get("/")
 def index():
@@ -44,6 +46,18 @@ def upload_file(file: UploadFile = File(...)):
     print(dict_pred)
     return dict_pred
 
+
+
+@app.post("/cluster_finance")
+def upload_file(file: UploadFile = File(...)):
+    X = pd.read_csv(file.file)[['review']]
+    X = api.prep_encoder.pre_autoencoder(X)
+    prediction= finance_cluster_model.predict(X)
+    dict_cluster_x = {'X': [float(x[0]) for x in prediction]}
+    dict_cluster_y = {'Y': [float(y[1]) for y in prediction]}
+    dict_cluster = {'cluster_x':dict_cluster_x, 'cluster_y':dict_cluster_y}
+    print(dict_cluster)
+    return dict_cluster
 
 
 
